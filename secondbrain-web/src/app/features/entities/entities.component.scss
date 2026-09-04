@@ -35,7 +35,8 @@
 }
 
 .add-btn {
-  padding: 14px 28px;
+  height: 48px;
+  padding: 0 22px;
 
   border: none;
 
@@ -45,9 +46,9 @@
 
   color: white;
 
-  font-size: 15px;
+  font-size: 14px;
 
-  font-weight: 500;
+  font-weight: 600;
 
   cursor: pointer;
 
@@ -457,6 +458,44 @@ position: relative;
 }
 
 @media (max-width: 768px) {
+  .entity-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .entity-card {
+    min-width: 0;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .avatar-name-type {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 26px;
+  }
+
+  .avatar-name-type h3 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 20px;
+  }
+
+  .description {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+  .view-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+
   .page-header {
     flex-direction: column;
 
@@ -473,7 +512,6 @@ position: relative;
 .avatar-name-type {
     display: flex;
     gap: 20px;
-    position: absolute;
 }
 
 /* ===========================================

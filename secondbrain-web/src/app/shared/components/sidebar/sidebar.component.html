@@ -1,11 +1,32 @@
-<div class="app-logo"><img class="logo-img" src="app-icon.png" alt="Birbal Logo" style="height: 100px; width: 220px; position: absolute; top: -120px; margin-top:125px; margin-left:-8px;"></div>
+<div class="app-logo"><img class="logo-img" src="app-icon.png" alt="Birbal Logo"
+    style="height: 100px; width: 220px; position: absolute; top: -120px; margin-top:125px; margin-left:-8px;"></div>
 <div class="divider"></div>
 <nav>
-  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
-  <a routerLink="/timeline" routerLinkActive="active">Timeline</a>
-  <a routerLink="/calendar" routerLinkActive="active">Calendar</a>
-  <a routerLink="/entities" routerLinkActive="active">Entities</a>
-  <a routerLink="/notes" routerLinkActive="active">Notes</a>
-  <a routerLink="/diary" routerLinkActive="active">Diary</a>
-  <a routerLink="/settings" routerLinkActive="active">Settings</a>
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
+    Dashboard
+  </a>
+
+  <a routerLink="/timeline" routerLinkActive="active" (click)="closeSidebar()">
+    Timeline
+  </a>
+
+  <a routerLink="/calendar" routerLinkActive="active" (click)="closeSidebar()">
+    Calendar
+  </a>
+
+  <a routerLink="/entities" routerLinkActive="active" (click)="closeSidebar()">
+    Entities
+  </a>
+
+  <a routerLink="/notes" routerLinkActive="active" (click)="closeSidebar()">
+    Notes
+  </a>
+
+  <a routerLink="/diary" routerLinkActive="active" (click)="closeSidebar()">
+    Diary
+  </a>
+
+  <a routerLink="/settings" routerLinkActive="active" (click)="closeSidebar()">
+    Settings
+  </a>
 </nav>

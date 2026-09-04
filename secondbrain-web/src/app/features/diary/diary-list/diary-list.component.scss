@@ -59,7 +59,7 @@
   align-items: center;
   justify-content: center;
 
-  min-height: 48px;
+  height: 48px;
 
   padding: 0 22px;
 
@@ -76,7 +76,7 @@
   text-decoration: none;
 
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 600;
 
   box-shadow:
     0 12px 28px rgba(81, 70, 229, 0.22);
@@ -273,7 +273,29 @@
   font-family: inherit;
 
   font-size: 12px;
+}
 
+.clear-btn:hover {
+  background: #d1d5db;
+}
+
+.diary-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.diary-card {
+
+  background: white;
+  border-radius: 18px;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  word-break: break-word;
+  padding: 22px;
   font-weight: 600;
 
   cursor: pointer;
@@ -335,6 +357,11 @@
     border-color 0.2s ease;
 }
 
+.diary-title {
+
+  overflow-wrap: anywhere;
+}
+
 .diary-card:hover {
   transform: translateY(-3px);
 
@@ -376,7 +403,6 @@
   min-height: 30px;
 
   padding: 0 10px;
-
   border-radius: 999px;
 
   font-size: 12px;
@@ -596,6 +622,18 @@
 
   color: #334155;
 
+.menu {
+  position: absolute;
+  right: 0;
+  top: 42px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+  overflow: hidden;
+  z-index: 100;
+  min-width: 150px;
+  max-width: 90vw;
+}
   font-family: inherit;
 
   font-size: 12px;
@@ -729,8 +767,34 @@
 .create-btn:hover {
   transform: translateY(-2px);
 
+  color: #4b5563;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+@keyframes fadeUp {
+
+  from {
+
+    opacity: 0;
+
+    transform: translateY(15px);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: translateY(0);
   box-shadow:
     0 14px 28px rgba(81, 70, 229, 0.24);
+}
+
 }
 
 
@@ -738,7 +802,7 @@
 // RESPONSIVE
 // =====================================================
 
-@media (max-width: 1100px) {
+@media(max-width: 1100px) {
 
   .diary-list {
     grid-template-columns:
@@ -747,6 +811,71 @@
 
 }
 
+.diary-card {
+
+  animation: fadeUp .35s ease;
+}
+
+
+//for tablets
+
+@media (max-width: 991px) {
+
+  .toolbar {
+    padding: 18px;
+  }
+
+  .toolbar-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .filter-row {
+    width: 100%;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group input,
+  .filter-group select {
+    width: 100%;
+  }
+
+}
+
+//for mobile
+
+@media (max-width: 767px) {
+
+  .toolbar {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .search-box input {
+    font-size: 14px;
+  }
+
+  .clear-btn {
+    width: 100%;
+  }
+  .menu-btn{
+
+  width:42px;
+
+  height:42px;
+}
+
+.menu button{
+
+  padding:14px 18px;
+}
+}
 
 @media (max-width: 800px) {
 

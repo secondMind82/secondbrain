@@ -87,6 +87,7 @@
 
 @media (max-width: 767px) {
   .quick-card {
-    width: 23.5rem
+    width: 100%;
+    box-sizing: border-box;
   }
 }

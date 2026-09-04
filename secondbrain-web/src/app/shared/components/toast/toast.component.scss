@@ -48,6 +48,20 @@
   background: #2563eb;
 }
 
+@media (max-width: 380px) {
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
 .icon {
   font-size: 18px;
 }

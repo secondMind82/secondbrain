@@ -10,6 +10,7 @@ import {
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth.service';
+import { LayoutService } from '../../../core/services/layout.service';
 
 import { environment } from '../../../../environments/environment';
 

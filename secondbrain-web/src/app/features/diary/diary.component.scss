@@ -91,10 +91,10 @@
 
   gap: 8px;
 
-  padding: 0 20px;
+  padding: 0 22px;
 
   border: none;
-  border-radius: 13px;
+  border-radius: 14px;
 
   background: linear-gradient(
     135deg,
@@ -106,7 +106,7 @@
 
   font-family: inherit;
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 600;
 
   cursor: pointer;
 
@@ -1253,6 +1253,8 @@
   }
 
   .diary-modal {
+    width: 100%;
+    max-width: 100%;
     padding: 20px;
 
     border-radius: 18px;

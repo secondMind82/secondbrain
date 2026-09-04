@@ -176,6 +176,34 @@
   animation: cardAnimation .8s ease;
 }
 
+@media (max-width: 767px) {
+  .login-page {
+    min-height: 100vh;
+    width: 100%;
+    display: block;
+  }
+
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px 16px;
+    box-sizing: border-box;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 430px;
+    box-sizing: border-box;
+    padding: 28px 20px;
+    border-radius: 20px;
+    gap: 16px;
+  }
+}
+
 @keyframes cardAnimation{
 
 from{

@@ -395,15 +395,21 @@
   }
 }
 
+@media (max-width: 1100px) {
+  .menu-btn {
+    display: flex;
+  }
+}
+
 /* =========================================================
    MOBILE
    ========================================================= */
 
 @media (max-width: 767px) {
   .topbar {
-    width: 27rem;
+    width: 100%;
     position: relative;
-    right: 16px;
+    right: 0;
     height: 60px;
 
     padding: 0 16px;
