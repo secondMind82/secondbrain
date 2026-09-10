@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { Brain, Mail, Lock,Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
+import { Brain, Mail, Lock, Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 import {
   FormBuilder,
   ReactiveFormsModule,
@@ -24,31 +24,35 @@ export class LoginComponent {
   readonly Eye = Eye;
   readonly EyeOff = EyeOff;
   hidePassword = true;
+  isLoading = signal(false);
+  errorMessage = signal('');
 
   loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
-onSubmit() {
-  this.loginForm.markAllAsTouched();
+  onSubmit() {
+    this.loginForm.markAllAsTouched();
+    this.errorMessage.set('');
 
-  if (this.loginForm.invalid) {
-    return;
-  }
-
-  this.authService.login(this.loginForm.getRawValue()).subscribe({
-    next: (response) => {
-      console.log('Login Successful', response);
-
-      localStorage.setItem('accessToken', response.accessToken);
-
-      this.router.navigate(['/']);
-    },
-
-        error: (error) => {
-      console.log('Full Error:', error);
+    if (this.loginForm.invalid) {
+      return;
     }
-  });
-}
+
+    this.isLoading.set(true);
+
+    this.authService.login(this.loginForm.getRawValue()).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        const message = error?.error?.message;
+        this.errorMessage.set(
+          Array.isArray(message) ? message[0] : message || 'Invalid email or password'
+        );
+      },
+    });
+  }
 }

@@ -386,6 +386,14 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.server-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 0;
+}
+
 
 .password-toggle {
   border: none;

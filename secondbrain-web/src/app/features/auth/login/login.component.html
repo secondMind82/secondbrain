@@ -95,8 +95,19 @@
                     Password must be at least 8 characters.
                 </p>
                 }
-                <button type="submit" [disabled]="loginForm.invalid">
-                    Login
+
+                @if (errorMessage()) {
+                <p class="error-message server-error">
+                    {{ errorMessage() }}
+                </p>
+                }
+
+                <button type="submit" [disabled]="loginForm.invalid || isLoading()">
+                    @if (isLoading()) {
+                        Logging in...
+                    } @else {
+                        Login
+                    }
                 </button>
             </form>
             <span>

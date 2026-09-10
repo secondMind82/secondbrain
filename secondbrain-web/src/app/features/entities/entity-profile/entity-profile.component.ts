@@ -17,6 +17,28 @@ import { EntitiesService } from '../../../core/services/entities.service';
 import { Entity } from '../../../core/models/entity.model';
 import { Timeline } from '../../../core/models/timeline.model';
 
+interface PurchaseItem {
+  id: string;
+  name: string;
+  price: string | number;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  purchaseId: string;
+}
+
+interface Purchase {
+  id: string;
+  title: string;
+  totalAmount: string | number;
+  purchaseDate: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  entityId: string | null;
+  items: PurchaseItem[];
+}
+
 @Component({
   selector: 'app-entity-profile',
   standalone: true,
@@ -42,20 +64,19 @@ export class EntityProfileComponent
   );
 
   profile = signal<{
-
     entity: Entity;
 
     stats: {
-
       timelineCount: number;
 
       firstEvent: string | null;
 
       lastEvent: string | null;
-
     };
 
     timelines: Timeline[];
+
+    purchases: Purchase[];
 
   } | null>(null);
 
@@ -129,16 +150,16 @@ export class EntityProfileComponent
 
   createTimeline(): void {
 
-  this.router.navigate(
-    ['/timeline'],
-    {
-      queryParams: {
-        create: true,
-        entity: this.profile()?.entity.id,
+    this.router.navigate(
+      ['/timeline'],
+      {
+        queryParams: {
+          create: true,
+          entity: this.profile()?.entity.id,
+        },
       },
-    },
-  );
+    );
 
-}
+  }
 
 }

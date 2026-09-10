@@ -1,7 +1,7 @@
 <div class="dashboard">
 
   <header class="dashboard-header">
-    <div>
+            <div>
     
     </div>
   </header>
@@ -9,138 +9,279 @@
 
   <section class="mind-section">
 
-  <div class="mind-header">
-    <span class="material-symbols-rounded">
-      psychology
-    </span>
-
-    <div>
-      <h2>What's on your mind today</h2>
-      <p>Capture an idea, thought, or memory.</p>
-    </div>
-  </div>
-
-  <div class="mind-input-wrapper">
-
-  <span class="material-symbols-rounded">
-    search
-  </span>
-
-  @if (selectedEntity()) {
-
-    <div class="selected-entity">
-
-      <div class="selected-entity-avatar">
-
-        @if (selectedEntity()?.avatar) {
-
-          <img
-            [src]="selectedEntity()?.avatar!"
-            [alt]="selectedEntity()?.name"
-          />
-
-        } @else {
-
-          <span class="material-symbols-rounded">
-            {{ selectedEntity()?.type === 'PERSON' ? 'person' : 'business' }}
-          </span>
-
-        }
-
-      </div>
-
-      <span class="selected-entity-name">
-        {{ selectedEntity()?.name }}
+    <div class="mind-header">
+      <span class="material-symbols-rounded">
+        psychology
       </span>
 
-      <button
-        type="button"
-        class="remove-entity"
-        (click)="selectedEntity.set(null)"
-      >
-        ×
-      </button>
-
+      <div>
+        <h2>What's on your mind today?</h2>
+        <p>Capture an idea, thought, or memory.</p>
+      </div>
     </div>
 
-  }
+    <div class="mind-input-wrapper">
 
-<input
-  type="text"
-  [placeholder]="selectedEntity() ? 'What happened...' : '@person what happened...'"
-  [(ngModel)]="mindQuery"
-  (ngModelChange)="onMindInput()"
-  (keydown.enter)="saveMindEntry()"
-/>
-</div>
-  @if (showEntitySuggestions()) {
+      <span class="material-symbols-rounded">
+        search
+      </span>
 
-  <div class="entity-suggestions">
+      @if (selectedEntity()) {
 
-    @if (isSearchingEntities()) {
+        <div class="selected-entity">
 
-      <div class="suggestion-loading">
-        Searching entities...
-      </div>
+          <div class="selected-entity-avatar">
 
-    } @else if (entitySuggestions().length === 0) {
-
-      <div class="suggestion-empty">
-        No entities found.
-      </div>
-
-    } @else {
-
-      @for (entity of entitySuggestions(); track entity.id) {
-
-        <button
-          type="button"
-          class="entity-suggestion"
-          (click)="selectEntity(entity)"
-        >
-
-          <div class="entity-avatar">
-
-            @if (entity.avatar) {
+            @if (selectedEntity()?.avatar) {
 
               <img
-                [src]="entity.avatar"
-                [alt]="entity.name"
+                [src]="selectedEntity()?.avatar!"
+                [alt]="selectedEntity()?.name"
               />
 
             } @else {
 
               <span class="material-symbols-rounded">
-                {{ entity.type === 'PERSON' ? 'person' : 'business' }}
+                {{ selectedEntity()?.type === 'PERSON' ? 'person' : 'business' }}
               </span>
 
             }
 
           </div>
 
-          <div class="entity-info">
+          <span class="selected-entity-name">
+            {{ selectedEntity()?.name }}
+          </span>
 
-            <strong>
-              {{ entity.name }}
-            </strong>
+        <button
+  type="button"
+  class="confirm-purchase"
+  (click)="confirmPurchase()"
+>
+  Confirm Purchase
+</button>
+        </div>
+
+      }
+
+      <input
+        type="text"
+        [(ngModel)]="mindQuery"
+        (ngModelChange)="onMindInput()"
+        (keydown.enter)="saveMindEntry()"
+        [placeholder]="
+          selectedEntity()
+            ? 'What happened...'
+            : '@person what happened...'
+        "
+      />
+
+    </div>
+
+
+    @if (showEntitySuggestions()) {
+
+      <div class="entity-suggestions">
+
+        @if (isSearchingEntities()) {
+
+          <div class="suggestion-loading">
+            Searching entities...
+          </div>
+
+        } @else if (entitySuggestions().length === 0) {
+
+          <div class="suggestion-empty">
+            No entities found.
+          </div>
+
+        } @else {
+
+          @for (entity of entitySuggestions(); track entity.id) {
+
+            <button
+              type="button"
+              class="entity-suggestion"
+              (click)="selectEntity(entity)"
+            >
+
+              <div class="entity-avatar">
+
+                @if (entity.avatar) {
+
+                  <img
+                    [src]="entity.avatar"
+                    [alt]="entity.name"
+                  />
+
+                } @else {
+
+                  <span class="material-symbols-rounded">
+                    {{ entity.type === 'PERSON' ? 'person' : 'business' }}
+                  </span>
+
+                }
+
+              </div>
+
+              <div class="entity-info">
+
+                <strong>
+                  {{ entity.name }}
+                </strong>
+
+                <span>
+                  {{ entity.type === 'PERSON' ? 'Person' : 'Company' }}
+                </span>
+
+              </div>
+
+            </button>
+
+          }
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
+
+  <!-- =================================
+       Purchase Preview
+       ================================= -->
+
+  @if (showPurchasePreview() && purchasePreview()) {
+
+    <div class="purchase-preview">
+
+      <div class="purchase-preview-header">
+
+        <div>
+
+          <span class="material-symbols-rounded">
+            shopping_cart
+          </span>
+
+          <div>
+
+            <h3>
+              {{ purchasePreview()?.title }}
+            </h3>
+
+            <p>
+              Purchase Preview
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="close-preview"
+          (click)="showPurchasePreview.set(false)"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="purchase-table">
+
+        <div class="purchase-table-header">
+
+          <span>
+            Product
+          </span>
+
+          <span>
+            Qty
+          </span>
+
+          <span>
+            Price
+          </span>
+
+          <span>
+            Total
+          </span>
+
+        </div>
+
+
+        @for (
+          item of purchasePreview()?.items;
+          track item.name
+        ) {
+
+          <div class="purchase-table-row">
+
+            <span class="product-name">
+              {{ item.name }}
+            </span>
 
             <span>
-              {{ entity.type === 'PERSON' ? 'Person' : 'Company' }}
+              {{ item.quantity }}
+            </span>
+
+            <span>
+              ₹{{ item.price | number:'1.0-2' }}
+            </span>
+
+            <span>
+              ₹{{ item.price * item.quantity | number:'1.0-2' }}
             </span>
 
           </div>
 
-        </button>
+        }
 
-      }
+      </div>
 
-    }
 
-  </div>
+      <div class="purchase-preview-footer">
 
-}
+        <div>
 
-</section>
+          <span>
+            Total
+          </span>
+
+          <strong>
+            ₹{{ purchasePreview()?.totalAmount | number:'1.0-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="purchase-actions">
+
+          <button
+            type="button"
+            class="cancel-purchase"
+            (click)="showPurchasePreview.set(false)"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="confirm-purchase"
+          >
+            Confirm Purchase
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
 
 
   <!-- Quick Actions -->
@@ -148,11 +289,15 @@
   <section class="quick-actions">
 
     <div class="section-header">
-      <h2>Quick Actions</h2>
+
+      <h2>
+        Quick Actions
+      </h2>
 
       <p>
       
       </p>
+
     </div>
 
     <div class="quick-grid">
@@ -199,65 +344,117 @@
 
   </section>
 
-<!-- Recent Timeline -->
-<section class="recent-timeline">
-  <div class="section-header">
-    <div>
-      <h2>Recent Timeline</h2>
-      <p>Your latest memories and activities</p>
-    </div>
 
-    @if (timelines().length > 0) {
-      <button
-        type="button"
-        class="view-all-btn"
-        (click)="router.navigate(['/timeline'])">
-        View all
-        <span class="material-symbols-rounded">arrow_forward</span>
-      </button>
-    }
-  </div>
+  <!-- Recent Timeline -->
 
-  @if (timelines().length === 0) {
-    <div class="timeline-empty">
-      <span class="material-symbols-rounded">timeline</span>
-      <p>No timeline entries yet.</p>
-    </div>
-  } @else {
-    <div class="timeline-list">
-      @for (timeline of timelines().slice(0, 4); track timeline.id) {
+  <section class="recent-timeline">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>
+          Recent Timeline
+        </h2>
+
+        <p>
+          Your latest memories and activities
+        </p>
+
+      </div>
+
+      @if (timelines().length > 0) {
+
         <button
           type="button"
-          class="timeline-card"
-          (click)="router.navigate(['/timeline', timeline.id])">
+          class="view-all-btn"
+          (click)="router.navigate(['/timeline'])">
 
-          <div class="timeline-icon">
-            <span class="material-symbols-rounded">
-              {{ timeline.showOnCalendar ? 'event' : 'description' }}
-            </span>
-          </div>
+          View all
 
-          <div class="timeline-content">
-            <strong>{{ timeline.title }}</strong>
-
-            @if (timeline.description) {
-              <p>{{ timeline.description }}</p>
-            }
-
-            <span class="timeline-date">
-              {{ formatEventDate(timeline.eventDate) }}
-            </span>
-          </div>
-
-          <span class="material-symbols-rounded timeline-arrow">
+          <span class="material-symbols-rounded">
             arrow_forward
           </span>
 
         </button>
+
       }
+
     </div>
-  }
-</section>
+
+
+    @if (timelines().length === 0) {
+
+      <div class="timeline-empty">
+
+        <span class="material-symbols-rounded">
+          timeline
+        </span>
+
+        <p>
+          No timeline entries yet.
+        </p>
+
+      </div>
+
+    } @else {
+
+      <div class="timeline-list">
+
+        @for (
+          timeline of timelines().slice(0, 4);
+          track timeline.id
+        ) {
+
+          <button
+            type="button"
+            class="timeline-card"
+            (click)="router.navigate(['/timeline', timeline.id])">
+
+            <div class="timeline-icon">
+
+              <span class="material-symbols-rounded">
+                {{ timeline.showOnCalendar ? 'event' : 'description' }}
+              </span>
+
+            </div>
+
+
+            <div class="timeline-content">
+
+              <strong>
+                {{ timeline.title }}
+              </strong>
+
+              @if (timeline.description) {
+
+                <p>
+                  {{ timeline.description }}
+                </p>
+
+              }
+
+              <span class="timeline-date">
+                {{ formatEventDate(timeline.eventDate) }}
+              </span>
+
+            </div>
+
+
+            <span class="material-symbols-rounded timeline-arrow">
+              arrow_forward
+            </span>
+
+          </button>
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
 
   <section class="bottom-grid">
 
