@@ -178,66 +178,86 @@ export class EntitiesService {
     };
   }
 
-  async getProfile(id: string, userId: string) {
-    const entity = await this.prisma.entity.findFirst({
-      where: {
-        id,
+async getProfile(id: string, userId: string) {
+  const entity = await this.prisma.entity.findFirst({
+    where: {
+      id,
+      userId,
+    },
+  });
 
-        userId,
-      },
-    });
+  if (!entity) {
+    throw new NotFoundException('Entity not found');
+  }
 
-    if (!entity) {
-      throw new NotFoundException('Entity not found');
-    }
+  const [timelines, purchases] =
+    await Promise.all([
+      this.prisma.timeline.findMany({
+        where: {
+          userId,
 
-    const timelines = await this.prisma.timeline.findMany({
-      where: {
-        userId,
-
-        entities: {
-          some: {
-            entityId: id,
+          entities: {
+            some: {
+              entityId: id,
+            },
           },
         },
-      },
 
-      include: {
-        entities: {
-          include: {
-            entity: {
-              select: {
-                id: true,
-
-                name: true,
-
-                type: true,
+        include: {
+          entities: {
+            include: {
+              entity: {
+                select: {
+                  id: true,
+                  name: true,
+                  type: true,
+                },
               },
             },
           },
         },
-      },
 
-      orderBy: {
-        eventDate: 'desc',
-      },
-    });
+        orderBy: {
+          eventDate: 'desc',
+        },
+      }),
 
-    return {
-      entity,
+      this.prisma.purchase.findMany({
+        where: {
+          userId,
+          entityId: id,
+        },
 
-      stats: {
-        timelineCount: timelines.length,
+        include: {
+          items: true,
+        },
 
-        firstEvent:
-          timelines.length > 0
-            ? timelines[timelines.length - 1].eventDate
-            : null,
+        orderBy: {
+          purchaseDate: 'desc',
+        },
+      }),
+    ]);
 
-        lastEvent: timelines.length > 0 ? timelines[0].eventDate : null,
-      },
+  return {
+    entity,
 
-      timelines,
-    };
-  }
+    stats: {
+      timelineCount: timelines.length,
+
+      firstEvent:
+        timelines.length > 0
+          ? timelines[timelines.length - 1].eventDate
+          : null,
+
+      lastEvent:
+        timelines.length > 0
+          ? timelines[0].eventDate
+          : null,
+    },
+
+    timelines,
+
+    purchases,
+  };
+}
 }

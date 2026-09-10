@@ -5,6 +5,8 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { SocialLoginDto } from './dto/social-login.dto';
+import { AppleLoginDto } from './dto/apple-login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +20,16 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post('google')
+  googleLogin(@Body() dto: SocialLoginDto) {
+    return this.authService.googleLogin(dto);
+  }
+
+  @Post('apple')
+  appleLogin(@Body() dto: AppleLoginDto) {
+    return this.authService.appleLogin(dto);
   }
 
 

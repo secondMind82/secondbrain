@@ -12,6 +12,8 @@ import { NotesModule } from './notes/notes.module';
 import { EntitiesModule } from './entities/entities.module';
 import { TimelineModule } from './timeline/timeline.module';
 import { DiaryModule } from './diary/diary.module';
+import { PurchasesModule } from './purchases/purchases.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { DiaryModule } from './diary/diary.module';
     EntitiesModule,
     TimelineModule,
     DiaryModule,
+    PurchasesModule,
+    AiModule,
   ],
 
   controllers: [

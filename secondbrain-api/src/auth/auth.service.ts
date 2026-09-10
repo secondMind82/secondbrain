@@ -6,13 +6,19 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ConfigService } from '@nestjs/config';
+import { OAuth2Client } from 'google-auth-library';
+import { SocialLoginDto } from './dto/social-login.dto';
+import { AppleLoginDto } from './dto/apple-login.dto';
+import * as appleSigninAuth from 'apple-signin-auth';
 
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
 async signup(signupDto: SignupDto) {
@@ -68,6 +74,10 @@ async login(loginDto: LoginDto) {
     throw new BadRequestException('Invalid email or password');
   }
 
+  if (!user.password) {
+    throw new BadRequestException('Invalid email or password');
+  }
+
   const isPasswordValid = await bcrypt.compare(
     loginDto.password,
     user.password,
@@ -83,6 +93,182 @@ async login(loginDto: LoginDto) {
   };
 
   const accessToken = await this.jwtService.signAsync(payload);
+
+  return {
+    message: 'Login successful',
+    accessToken,
+    user: {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+    },
+  };
+}
+
+// ==========================================
+// GOOGLE SOCIAL LOGIN
+// ==========================================
+
+async googleLogin(dto: SocialLoginDto) {
+  const clientId =
+    this.configService.get<string>('GOOGLE_WEB_CLIENT_ID');
+
+  if (!clientId) {
+    throw new BadRequestException(
+      'GOOGLE_WEB_CLIENT_ID is not configured',
+    );
+  }
+
+  const client = new OAuth2Client(clientId);
+
+  let payload: { [key: string]: any } | undefined;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: dto.idToken,
+      audience: clientId,
+    });
+    payload = ticket.getPayload();
+  } catch {
+    throw new UnauthorizedException('Invalid Google token');
+  }
+
+  if (!payload || !payload.email) {
+    throw new UnauthorizedException('Invalid Google token');
+  }
+
+  const email = payload.email.toLowerCase();
+  const fullName =
+    payload.name ||
+    [payload.given_name, payload.family_name]
+      .filter(Boolean)
+      .join(' ') ||
+    email.split('@')[0];
+  const providerId = payload.sub;
+
+  let user = await this.prisma.user.findFirst({
+    where: {
+      provider: 'GOOGLE',
+      providerId,
+    },
+  });
+
+  if (!user) {
+    const existingByEmail =
+      await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+    if (existingByEmail) {
+      user = await this.prisma.user.update({
+        where: { id: existingByEmail.id },
+        data: { provider: 'GOOGLE', providerId },
+      });
+    } else {
+      user = await this.prisma.user.create({
+        data: {
+          fullName,
+          email,
+          provider: 'GOOGLE',
+          providerId,
+        },
+      });
+    }
+  }
+
+  const jwtPayload = {
+    sub: user.id,
+    email: user.email,
+  };
+
+  const accessToken =
+    await this.jwtService.signAsync(jwtPayload);
+
+  return {
+    message: 'Login successful',
+    accessToken,
+    user: {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+    },
+  };
+}
+
+// ==========================================
+// APPLE SOCIAL LOGIN
+// ==========================================
+
+async appleLogin(dto: AppleLoginDto) {
+  const bundleId =
+    this.configService.get<string>('APPLE_BUNDLE_ID');
+
+  if (!bundleId) {
+    throw new BadRequestException(
+      'APPLE_BUNDLE_ID is not configured',
+    );
+  }
+
+  let payload: any;
+
+  try {
+    payload = await appleSigninAuth.verifyIdToken(
+      dto.identityToken,
+      {
+        audience: bundleId,
+      },
+    );
+  } catch {
+    throw new UnauthorizedException('Invalid Apple token');
+  }
+
+  if (!payload || !payload.sub) {
+    throw new UnauthorizedException('Invalid Apple token');
+  }
+
+  const email = (payload.email || dto.email || '').toLowerCase();
+  const providerId = payload.sub;
+  const fullName =
+    dto.fullName || (email ? email.split('@')[0] : 'Apple User');
+
+  let user = await this.prisma.user.findFirst({
+    where: {
+      provider: 'APPLE',
+      providerId,
+    },
+  });
+
+  if (!user) {
+    const existingByEmail = email
+      ? await this.prisma.user.findUnique({
+          where: { email },
+        })
+      : null;
+
+    if (existingByEmail) {
+      user = await this.prisma.user.update({
+        where: { id: existingByEmail.id },
+        data: { provider: 'APPLE', providerId },
+      });
+    } else {
+      user = await this.prisma.user.create({
+        data: {
+          fullName,
+          email,
+          provider: 'APPLE',
+          providerId,
+        },
+      });
+    }
+  }
+
+  const jwtPayload = {
+    sub: user.id,
+    email: user.email,
+  };
+
+  const accessToken =
+    await this.jwtService.signAsync(jwtPayload);
 
   return {
     message: 'Login successful',
@@ -268,6 +454,12 @@ async changePassword(
 
   if (!user) {
     throw new UnauthorizedException('User not found');
+  }
+
+  if (!user.password) {
+    throw new UnauthorizedException(
+      'User has no password set - use social login',
+    );
   }
 
   const isPasswordValid = await bcrypt.compare(
