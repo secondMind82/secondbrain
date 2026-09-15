@@ -183,6 +183,9 @@ model PurchaseItem {
 enum EntityType {
   PERSON
   COMPANY
+  COURSE
+  PLACE
+  TECHNOLOGY
 }
 
 enum DiaryMood {
