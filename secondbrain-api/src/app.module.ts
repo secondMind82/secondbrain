@@ -15,6 +15,7 @@ import { TimelineModule } from './timeline/timeline.module';
 import { DiaryModule } from './diary/diary.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { AiModule } from './ai/ai.module';
+import { BackupsModule } from './backup/backups.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AiModule } from './ai/ai.module';
     DiaryModule,
     PurchasesModule,
     AiModule,
+    BackupsModule,
   ],
 
   controllers: [AppController, HealthController],

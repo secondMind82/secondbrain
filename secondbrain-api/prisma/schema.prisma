@@ -32,6 +32,7 @@ model User {
   timelines    Timeline[]
   diaryEntries DiaryEntry[]
   purchases    Purchase[]
+  backups      Backup[]
 
   @@unique([provider, providerId])
 }
@@ -173,6 +174,26 @@ model PurchaseItem {
 
   purchaseId String
   purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+}
+
+
+// ==========================================
+// BACKUP
+// ==========================================
+
+model Backup {
+  id            String @id @default(cuid())
+  backupVersion Int
+  payload       Json
+  sizeBytes     Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 
