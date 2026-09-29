@@ -187,6 +187,17 @@ model Backup {
   payload       Json
   sizeBytes     Int
 
+  // ─── Backup metadata (all nullable so v1 rows stay valid) ────────────────
+  // SHA-256 (hex) of the canonical `data` section, verified by the client on
+  // restore and recomputed here to reject tampered uploads.
+  checksum String?
+  // Birbal app version that produced the backup ("1.0.0").
+  appVersion String?
+  // How the `data` section is encoded: "json" or "gzip+base64".
+  encoding String @default("json")
+  // Per-collection row counts for display without downloading the payload.
+  recordCounts Json?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
