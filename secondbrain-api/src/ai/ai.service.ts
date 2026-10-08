@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GeminiService, SmartCaptureResult } from './gemini.service';
+import { ChatTurn, GeminiService, SmartCaptureResult } from './gemini.service';
 
 @Injectable()
 export class AiService {
@@ -10,5 +10,13 @@ export class AiService {
     entityName?: string,
   ): Promise<SmartCaptureResult> {
     return this.geminiService.smartCapture(input, entityName);
+  }
+
+  async chat(
+    message: string,
+    context?: Record<string, unknown>,
+    history?: ChatTurn[],
+  ): Promise<{ reply: string }> {
+    return this.geminiService.chat(message, context, history);
   }
 }
