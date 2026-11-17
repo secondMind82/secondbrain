@@ -64,9 +64,10 @@ async signup(signupDto: SignupDto) {
 }
 
 async login(loginDto: LoginDto) {
+  const email = loginDto.email.trim().toLowerCase();
   const user = await this.prisma.user.findUnique({
     where: {
-      email: loginDto.email,
+      email,
     },
   });
 
@@ -78,10 +79,15 @@ async login(loginDto: LoginDto) {
     throw new BadRequestException('Invalid email or password');
   }
 
-  const isPasswordValid = await bcrypt.compare(
-    loginDto.password,
-    user.password,
-  );
+  // Old or manually imported account rows can contain a malformed hash.
+  // Treat those as invalid credentials instead of leaking a bcrypt exception
+  // as an HTTP 500.
+  let isPasswordValid = false;
+  try {
+    isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+  } catch {
+    isPasswordValid = false;
+  }
 
   if (!isPasswordValid) {
     throw new BadRequestException('Invalid email or password');
